@@ -1,7 +1,28 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Search, LogIn } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 
-const Navbar = ({ cartItems = [] }) => {
+const Navbar = ({ cartItems = [], setSearchTerm }) => {
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  useEffect(() => {
+    const debouncedSearch = debounce(() => {
+      if (typeof setSearchTerm === 'function') {
+        setSearchTerm(searchValue);
+      } else {
+        throw new Error("setSearchTerm must be a function");
+      }
+    }, 300);
+
+    debouncedSearch();
+    return () => debouncedSearch.cancel();
+  }, [searchValue, setSearchTerm]);
+
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto p-4 flex justify-between items-center">
@@ -14,8 +35,24 @@ const Navbar = ({ cartItems = [] }) => {
           <a href="/about" className="hover:text-blue-600 transition duration-300 ease-in-out">About Us</a>
           <a href="/contact" className="hover:text-blue-600 transition duration-300 ease-in-out">Contact</a>
         </div>
+
         <div className="flex items-center space-x-4">
-          <a href="/cart" className="text-gray-700 hover:text-blue-600 transition duration-300 ease-in-out">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchValue}
+              onChange={handleSearchChange}
+              className="input py-2 px-4 border rounded-lg"
+            />
+            <Search className="absolute right-2 top-2 text-gray-500" />
+          </div>
+
+          <a href="/login" className="text-gray-700 hover:text-blue-600 transition duration-300 ease-in-out">
+            <LogIn className="w-6 h-6" />
+          </a>
+
+          <a href="/cart" className="text-gray-700 hover:text-blue-600 transition duration-300 ease-in-out relative">
             <ShoppingCart className="w-6 h-6" />
             {cartItems.length > 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -23,23 +60,16 @@ const Navbar = ({ cartItems = [] }) => {
               </span>
             )}
           </a>
-          <button className="md:hidden focus:outline-none">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
         </div>
       </div>
     </nav>
   );
 };
 
-Navbar.propTypes = {
-  cartItems: PropTypes.array,
-};
 
-Navbar.defaultProps = {
-  cartItems: [], // Provide default value to avoid undefined error
+Navbar.propTypes = {
+  cartItems: PropTypes.array, 
+  setSearchTerm: PropTypes.func.isRequired, 
 };
 
 export default Navbar;

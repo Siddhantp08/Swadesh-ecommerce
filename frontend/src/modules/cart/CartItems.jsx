@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 const CartItem = ({ item, removeItem, updateQuantity }) => {
   if (!item) {
-    return null; // If item is undefined, don't render anything
+    return null; 
   }
 
   return (
@@ -38,7 +38,13 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
 };
 
 CartItem.propTypes = {
-  item: PropTypes.object.isRequired,
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired,
+    quantity: PropTypes.number.isRequired
+  }).isRequired,
   updateQuantity: PropTypes.func.isRequired,
   removeItem: PropTypes.func.isRequired,
 };
