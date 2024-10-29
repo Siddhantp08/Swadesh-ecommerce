@@ -12,15 +12,15 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  
+  // Flatten products across all categories
   const flattenedProducts = Object.values(Products).flat();
 
-  
+  // Filter products by search term
   const filteredProducts = flattenedProducts.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
+  // Load cart items from localStorage on first render
   useEffect(() => {
     const savedCartItems = JSON.parse(localStorage.getItem('cartItems'));
     if (savedCartItems) {
@@ -28,12 +28,11 @@ function App() {
     }
   }, []);
 
-  
+  // Save cart items to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  
   const addToCart = (product) => {
     const existingItem = cartItems.find(item => item.id === product.id);
     if (existingItem) {
@@ -41,15 +40,14 @@ function App() {
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       ));
     } else {
-      setCartItems([...cartItems, { id: product.id, name: product.name, price: product.price, image: product.image, quantity: 1 }]);
+      setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
   };
-  
 
   const updateQuantity = (id, newQuantity) => {
     setCartItems(cartItems.map(item =>
       item.id === id ? { ...item, quantity: newQuantity } : item
-    ).filter(item => item.quantity > 0));
+    ).filter(item => item.quantity > 0)); 
   };
 
   const removeItem = (id) => {
@@ -60,14 +58,13 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-        <Route
+          <Route
             path="/"
             element={<HomePage products={filteredProducts} addToCart={addToCart} setSearchTerm={setSearchTerm} />}
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
-
           <Route path="/cart" element={<Cart cartItems={cartItems} updateQuantity={updateQuantity} removeItem={removeItem} />} />
         </Routes>
       </AuthProvider>

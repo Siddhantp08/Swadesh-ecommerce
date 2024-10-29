@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 
 const Footer = () => {
@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white py-12">
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
-        {/* Company Info */}
+        
         <div>
           <h3 className="text-lg font-semibold mb-4">MyStore</h3>
           <p className="text-gray-400">Connecting the Indian diaspora to traditional and ethnic products.</p>
